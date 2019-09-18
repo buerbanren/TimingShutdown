@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/TimingShutdown">
+        <file>Resources/i.png</file>
+        <file>Resources/ico.ico</file>
+        <file>Resources/icon.png</file>
+        <file>Resources/icon-small.png</file>
+        <file>Resources/trayAbout.png</file>
+        <file>Resources/trayExit.png</file>
+        <file>Resources/trayIcon.png</file>
+    </qresource>
+</RCC>
