@@ -16,14 +16,13 @@
 class TimingShutdown : public QWidget
 {
 	Q_OBJECT
-
 public:
 	TimingShutdown(QWidget *parent = Q_NULLPTR);
 	void timing();
-	int timerId;
-	int h,m,s=59;//倒计时数码
+	unsigned int timerId;
+	unsigned int h,m,s=00;//时分秒
 	QString tmm;
-	QString tmstr;
+	QString tmstr;//lcd显示字符串
 	QString boxTitle = QStringLiteral("提示");
 	QString boxMessage = QStringLiteral("倒计时结束");
 	void closeEvent(QCloseEvent *e);

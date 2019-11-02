@@ -4,11 +4,11 @@
 #include <QMessageBox>
 #include <QTextCodec>
 #include <QString>
-#include <qmenubar.h>
 #include <qmenu.h>
 #include <qaction.h>
 #include <qsystemtrayicon.h>
 #include <QApplication>
+#include <Windows.h>
 
 TimingShutdown::TimingShutdown(QWidget *parent)
 	: QWidget(parent)
@@ -48,7 +48,8 @@ TimingShutdown::TimingShutdown(QWidget *parent)
 	connect(about, &QAction::triggered,
 		[=]()
 		{
-			QMessageBox::information(this, QString::fromLocal8Bit("关于"), QString::fromLocal8Bit("川小波出品\n欢迎各位指导！\nemail：moyuyx@outlook.com"));
+			QMessageBox::information(this, QString::fromLocal8Bit("关于"), \
+				QString::fromLocal8Bit("川小波出品\n欢迎各位指导！\nemail：moyuyx@outlook.com"));
 		});
 
 	//设置托盘图标及菜单
@@ -70,14 +71,14 @@ TimingShutdown::TimingShutdown(QWidget *parent)
 	hour->setParent(this);//设置小时微调栏
 	hour->setMinimum(0);
 	hour->setMaximum(23);
-	hour->setValue(1);
+	hour->setValue(0);
 	hour->move(60, 35);
 	hour->setSingleStep(1);
 
 	minute->setParent(this);//设置分钟微调栏
 	minute->setMinimum(0);
 	minute->setMaximum(59);
-	minute->setValue(0);
+	minute->setValue(1);
 	minute->move(140, 35);
 	minute->setSingleStep(5);
 
@@ -89,23 +90,21 @@ TimingShutdown::TimingShutdown(QWidget *parent)
 	cancel->move(220, 61);
 
 	connect(mks, &QPushButton::released, this, &TimingShutdown::timing);//按钮槽函数连接
-	connect(cancel, &QPushButton::clicked,
+	connect(cancel, &QPushButton::clicked,//取消并退出
 		[=]()
 		{
 			timer->stop();
-		});//取消并退出
+		});
 
 	lcdCount->setDigitCount(8);//lcd数码框设置
 	lcdCount->setParent(this);
 	lcdCount->resize(240, 60);
 	lcdCount->move(39, 90);
-	lcdCount->setStyleSheet("color:#f00;text-align:auto;background:#0e0;borer-style:none;");
+	lcdCount->setStyleSheet("color:#f00;text-align:auto;background:#fff;");
 
-	timer->setInterval(1000);
+	timer->setInterval(1000);//设置定时器
 	timer->stop();
 	connect(timer, SIGNAL(timeout()), this, SLOT(timeEvent()));
-
-
 }
 
 void TimingShutdown::timing()
@@ -119,10 +118,8 @@ void TimingShutdown::timing()
 	else
 	{
 		timer->start();
-		m--;
-
+		s = 00;
 	}
-
 }
 
 void TimingShutdown::timeEvent()
@@ -131,31 +128,35 @@ void TimingShutdown::timeEvent()
 	tmm = QString::number(m, 10);
 	tmstr = tmstr.append(tmm + ':');
 	tmstr = tmstr.append(QString::number(s, 10));
-	
+	qDebug() << s<<endl;
 	lcdCount->display(tmstr);
-	if (s--==0)
+	if (s == 0)
 	{
-		if (h == 0 && m == 0)//倒计时结束
-				{
-					timer->stop();
-					system("shutdown -s -t 0");
-				}
-		if (m-- == 0 && h != 0)
+		if (m != 0)
+			m--;
+		else
 		{
-			h--, m = 59;
+			if (h != 0)
+			{
+				h--;
+				m = 59;
+			}
+			else
+			{
+				timer->stop();
+				system("shutdown -s -t 0");
+				return;
+			}
 		}
-		if (h == 0)
-		{
-			
-		}
-		
 		s = 59;
 	}
+	else
+		s--;
+
 }
 
 void TimingShutdown::closeEvent(QCloseEvent *e)
 {
 	e->ignore();
 	this->hide();
-
 }

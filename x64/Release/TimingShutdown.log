@@ -1,13 +1,15 @@
-﻿Build started 2019/9/17 23:17:28.
+﻿Build started 2019/11/2 19:14:00.
      1>Project "G:\Programming\C++_Qt_VS\TimingShutdown\TimingShutdown.vcxproj" on node 2 (Rebuild target(s)).
      1>QtRccSetDependencies:
          "F:\Qt\Qt5.6.0\5.6\msvc2015_64\bin\rcc.exe" --list "TimingShutdown.qrc" > "x64\Release\rcc_list.txt" 2> nul
        QtWork:
+         Rcc'ing TimingShutdown.qrc...
          Moc'ing TimingShutdown.h...
        ClCompile:
-         F:\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /I.\GeneratedFiles /I. /IF:\Qt\Qt5.6.0\5.6\msvc2015_64\include /I.\GeneratedFiles\Release /IF:\Qt\Qt5.6.0\5.6\msvc2015_64\include\QtCore /IF:\Qt\Qt5.6.0\5.6\msvc2015_64\include\QtGui /IF:\Qt\Qt5.6.0\5.6\msvc2015_64\include\QtANGLE /IF:\Qt\Qt5.6.0\5.6\msvc2015_64\include\QtWidgets /nologo /W1 /WX- /MP /O2 /D UNICODE /D WIN32 /D WIN64 /D QT_DLL /D QT_NO_DEBUG /D NDEBUG /D QT_CORE_LIB /D QT_GUI_LIB /D QT_WIDGETS_LIB /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"x64\Release\\" /Fd"x64\Release\vc140.pdb" /Gd /TP /errorReport:prompt main.cpp TimingShutdown.cpp GeneratedFiles\qrc_TimingShutdown.cpp GeneratedFiles\Release\moc_TimingShutdown.cpp
+         F:\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /I.\GeneratedFiles\Release /I.\GeneratedFiles /I. /IF:\Qt\Qt5.6.0\5.6\msvc2015_64\include /I.\GeneratedFiles\Release /IF:\Qt\Qt5.6.0\5.6\msvc2015_64\include\QtCore /IF:\Qt\Qt5.6.0\5.6\msvc2015_64\include\QtGui /IF:\Qt\Qt5.6.0\5.6\msvc2015_64\include\QtANGLE /IF:\Qt\Qt5.6.0\5.6\msvc2015_64\include\QtWidgets /nologo /W1 /WX- /MP /O2 /D UNICODE /D WIN32 /D WIN64 /D QT_DLL /D QT_NO_DEBUG /D NDEBUG /D QT_CORE_LIB /D QT_GUI_LIB /D QT_WIDGETS_LIB /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"x64\Release\\" /Fd"x64\Release\vc140.pdb" /Gd /TP /errorReport:prompt main.cpp TimingShutdown.cpp
          main.cpp
          TimingShutdown.cpp
+         F:\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /I.\GeneratedFiles\Release /I.\GeneratedFiles /I. /IF:\Qt\Qt5.6.0\5.6\msvc2015_64\include /I.\GeneratedFiles\Release /IF:\Qt\Qt5.6.0\5.6\msvc2015_64\include\QtCore /IF:\Qt\Qt5.6.0\5.6\msvc2015_64\include\QtGui /IF:\Qt\Qt5.6.0\5.6\msvc2015_64\include\QtANGLE /IF:\Qt\Qt5.6.0\5.6\msvc2015_64\include\QtWidgets /nologo /W1 /WX- /MP /O2 /D UNICODE /D WIN32 /D WIN64 /D QT_DLL /D QT_NO_DEBUG /D NDEBUG /D QT_CORE_LIB /D QT_GUI_LIB /D QT_WIDGETS_LIB /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fp"x64\Release\TimingShutdown.pch" /Fa"x64\Release\\" /Fo"x64\Release\\" /Fd"x64\Release\vc140.pdb" /Gd /errorReport:prompt GeneratedFiles\qrc_TimingShutdown.cpp GeneratedFiles\Release\moc_TimingShutdown.cpp
          qrc_TimingShutdown.cpp
          moc_TimingShutdown.cpp
        ResourceCompile:
@@ -23,4 +25,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:03.04
+Time Elapsed 00:00:05.29
