@@ -12,6 +12,16 @@
 #include <QMessageBox>
 #include <QAction>
 #include <QCloseEvent>
+#include <Windows.h>
+#include <qsystemtrayicon.h>
+#include <qmenu.h>
+#include <QPainter>
+#include <QPen>
+#include <QDialog>
+#include <QEvent>
+#include <QFocusEvent>
+#include <QRadioButton>
+#include <Windows.h>
 
 class TimingShutdown : public QWidget
 {
@@ -25,7 +35,7 @@ public:
 	QString tmstr;//lcd显示字符串
 	QString boxTitle = QStringLiteral("提示");
 	QString boxMessage = QStringLiteral("倒计时结束");
-	void closeEvent(QCloseEvent *e);
+	void TimingShutdown::closeEvent(QCloseEvent *e);
 
 private:
 	QSpinBox *hour= new QSpinBox(this);
@@ -38,6 +48,19 @@ private:
 	QLabel *ts = new QLabel(this);
 	QLabel *xh = new QLabel(this);
 	QLabel *fz = new QLabel(this);
+	QIcon ico;
+	QMenu *trayMenu = new QMenu(this);
+	QAction *widgetShow = new QAction(this);
+	QAction *exit = new QAction(this);
+	QAction *about = new QAction(this);
+	QSystemTrayIcon *trayIcon = new QSystemTrayIcon();
+	QLabel *cztxt = new QLabel(this);
+	QRadioButton *typegj = new QRadioButton(this);
+	QRadioButton *typecq = new QRadioButton(this);
+	QRadioButton *typezx = new QRadioButton(this);
+	HANDLE hd;
+	LUID luid;
+	TOKEN_PRIVILEGES p;
 
 signals:
 	void exitPro();

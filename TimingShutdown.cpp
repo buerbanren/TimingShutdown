@@ -4,32 +4,32 @@
 #include <QMessageBox>
 #include <QTextCodec>
 #include <QString>
-#include <qmenu.h>
 #include <qaction.h>
-#include <qsystemtrayicon.h>
 #include <QApplication>
-#include <Windows.h>
 
 TimingShutdown::TimingShutdown(QWidget *parent)
 	: QWidget(parent)
 {
-	QIcon ico;
+	//提权操作
+	OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES, &hd);
+	LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &luid);
+	p.PrivilegeCount = 1;
+	p.Privileges[0].Luid = luid;
+	p.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+	AdjustTokenPrivileges(hd, false, &p, NULL, NULL, NULL);
+
 	ico.addFile(":/TimingShutdown/Resources/icon.png/");
 	setWindowIcon(ico);
-	setWindowTitle(QString::fromLocal8Bit("定时关机"));//设置窗口标题
+	setWindowTitle(QString::fromLocal8Bit("定时关机 - by:川小波 吾爱破解"));//设置窗口标题
 	setMaximumSize(320, 180);//限制窗口大小
 	setMinimumSize(320, 180);
 
 	//托盘菜单设置
-	QMenu *trayMenu=new QMenu(this);
-	QAction *widgetShow =new QAction(this);
-	QAction *exit =new QAction(this);
-	QAction *about = new QAction(this);
-	about->setText(QString::fromLocal8Bit("关于"));
 	widgetShow->setText(QString::fromLocal8Bit("主界面"));
+	about->setText(QString::fromLocal8Bit("关于"));
 	exit->setText(QString::fromLocal8Bit("退出"));
-	trayMenu->addAction(about);
 	trayMenu->addAction(widgetShow);
+	trayMenu->addAction(about);
 	trayMenu->addSeparator();
 	trayMenu->addAction(exit);
 	connect(widgetShow, &QAction::triggered,
@@ -40,7 +40,11 @@ TimingShutdown::TimingShutdown(QWidget *parent)
 	connect(exit, &QAction::triggered,
 		[=]()
 		{
-			timer->stop();
+			if (timer->isActive())
+			{
+				timer->stop();
+			}
+			trayIcon->hide();
 			trayMenu->close();
 			this->close();
 			QApplication::exit(0);
@@ -48,52 +52,69 @@ TimingShutdown::TimingShutdown(QWidget *parent)
 	connect(about, &QAction::triggered,
 		[=]()
 		{
-			QMessageBox::information(this, QString::fromLocal8Bit("关于"), \
-				QString::fromLocal8Bit("川小波出品\n欢迎各位指导！\nemail：moyuyx@outlook.com"));
+			MessageBox(NULL, TEXT("designed by 川小波 from 吾爱破解论坛"), TEXT("关于"), MB_OK);
 		});
 
 	//设置托盘图标及菜单
-	QSystemTrayIcon *trayIcon=new QSystemTrayIcon(this);
 	trayIcon->setIcon(ico);
 	trayIcon->setToolTip(QString::fromLocal8Bit("LCD关机小程序"));
 	trayIcon->setContextMenu(trayMenu);
 	trayIcon->show();
 
 	ts->setText(QStringLiteral("倒计时"));//设置文本标签
-	ts->move(15, 38);
-
+	ts->move(15, 23);
 	xh->setText(QStringLiteral("小时"));
-	xh->move(108, 38);
-
+	xh->move(108, 23);
 	fz->setText(QStringLiteral("分钟"));
-	fz->move(187, 38);
+	fz->move(187, 23);
 
 	hour->setParent(this);//设置小时微调栏
 	hour->setMinimum(0);
 	hour->setMaximum(23);
 	hour->setValue(0);
-	hour->move(60, 35);
+	hour->move(60, 20);
 	hour->setSingleStep(1);
 
 	minute->setParent(this);//设置分钟微调栏
 	minute->setMinimum(0);
 	minute->setMaximum(59);
 	minute->setValue(1);
-	minute->move(140, 35);
+	minute->move(140, 20);
 	minute->setSingleStep(5);
 
 	mks->setParent(this);//确定按钮
 	mks->setText(QString::fromLocal8Bit("确定"));
-	mks->move(220, 35);
+	mks->move(220, 20);
+
+	cztxt->setText(QString::fromLocal8Bit("操作"));
+	cztxt->move(15, 58);
+	typegj->setChecked(true);
+	typegj->setText(QString::fromLocal8Bit("关机"));
+	typegj->move(55, 58);
+	typecq->setText(QString::fromLocal8Bit("重启"));
+	typecq->move(105, 58);
+	typezx->setText(QString::fromLocal8Bit("注销"));
+	typezx->move(160, 58);
 
 	cancel->setText(QString::fromLocal8Bit("取消"));//取消倒计时
-	cancel->move(220, 61);
+	cancel->move(220, 51);
 
 	connect(mks, &QPushButton::released, this, &TimingShutdown::timing);//按钮槽函数连接
 	connect(cancel, &QPushButton::clicked,//取消并退出
 		[=]()
 		{
-			timer->stop();
+			if (timer->isActive())
+			{
+				timer->stop();
+				//system("shutdown -a");
+				QMessageBox::information(this, QString::fromLocal8Bit("提示"),
+					QString::fromLocal8Bit("已停止倒计时！"), QMessageBox::StandardButton::Ok);
+			}
+			else
+			{
+				QMessageBox::information(this, QString::fromLocal8Bit("提示"),
+					QString::fromLocal8Bit("未开始倒计时！"), QMessageBox::StandardButton::Ok);
+			}
 		});
 
 	lcdCount->setDigitCount(8);//lcd数码框设置
@@ -144,7 +165,21 @@ void TimingShutdown::timeEvent()
 			else
 			{
 				timer->stop();
-				system("shutdown -s -t 0");
+				if (typegj->isChecked())
+				{
+					//system("shutdown /s /t 0");
+					ExitWindowsEx(EWX_SHUTDOWN | EWX_FORCE, 0);
+				}
+				else if (typecq->isChecked())
+				{
+					//system("shutdown /r /t 0");
+					ExitWindowsEx(EWX_REBOOT | EWX_FORCE, 0);
+				}
+				else
+				{
+					//system("shutdown -l");
+					ExitWindowsEx(EWX_LOGOFF | EWX_FORCE, 0);
+				}
 				return;
 			}
 		}
@@ -152,7 +187,6 @@ void TimingShutdown::timeEvent()
 	}
 	else
 		s--;
-
 }
 
 void TimingShutdown::closeEvent(QCloseEvent *e)
